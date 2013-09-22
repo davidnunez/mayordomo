@@ -30,10 +30,7 @@ File.open( filename ).each do |line|
 		title = splitline[2..splitline.length].join(' | ') 
 		creation_date.strip!
 		creation_date[-5,1] = ' '
-		#puts creation_date + " TYPE: #{type.strip}"
 		task = (title.strip! + " c(#{creation_date})")
-		# puts task.shellescape
-		
 	else
 		note += line
 	end
