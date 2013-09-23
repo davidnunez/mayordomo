@@ -12,10 +12,16 @@ File.open( filename ).each do |line|
 	t = Task.new (line) #, [])
 	#t.is_task? ? (puts "true"): (puts "false")
 	#puts "topics: " + t.task_string.scan(/(?<!\w)#[\w()]+/).inspect
-	tags = "tags: " + t.task_string.scan(/(?<!\w)@\w*\([^\)]*\)|(?<!\w)@\w*\b/).inspect
-	puts "Raw Tags: " + tags
+	tags = t.task_string.scan(/(?<!\w)@\w*\([^\)]*\)|(?<!\w)@\w*\b/)
+	puts "Raw Task: " + t.task_string.gsub(/(?<!\w)@\w*\([^\)]*\)|(?<!\w)@\w*\b/, "").strip
+	puts "Raw Tags: " + tags.inspect 
 
-
+	tags.each do |tag| 
+		puts "\tTag: " + tag[/^[^\()]*/]
+		if tag[/\(.*\)/]
+			puts "\t\tValue: " + tag.scan(/\(([^\)]+)\)/).last.first
+		end
+	end
 
 	#puts t.indent_level
 	#puts line
