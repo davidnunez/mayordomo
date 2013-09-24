@@ -6,6 +6,7 @@ require('./tag.rb')
 class Task
   attr_accessor :tags, :task_string, :raw_task_string
   attr_accessor :created_date, :start_date, :due_date
+  #attr_accessor :is_project, :is_task
 
   def initialize(raw_task_string_data="", task_tag_array=[])
     @raw_task_string = raw_task_string_data
@@ -17,10 +18,14 @@ class Task
     tag_strings = @raw_task_string.scan(/(?<!\w)@\w*\([^\)]*\)|(?<!\w)@\w*\b/)
     @task_string = @raw_task_string.gsub(/(?<!\w)@\w*\([^\)]*\)|(?<!\w)@\w*\b/, "").strip
 
-    if is_task? 
+   
+    @is_task = @task_string.strip =~ /^-.*/
+    @is_project = @task_string.strip =~ /.*:$/
+
+    if is_task?
       @task_string = @task_string.strip[1..@task_string.length].strip
     end
-
+   
     if is_project? 
       @task_string = @task_string.strip[0..@task_string.length-2].strip
     end
@@ -69,11 +74,11 @@ class Task
 
 
   def is_project?
-    @raw_task_string.strip =~ /.*:$/
+    @is_project
   end
 
   def is_task?
-    @raw_task_string.strip =~ /^-.*/
+    @is_task
   end
 
   def is_comment?
