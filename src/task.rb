@@ -69,7 +69,7 @@ class Task
     tags.each do |tag| 
       return_value = return_value || (tag.tag.downcase == "@done")
     end
-    if (tree_node)
+    if (tree_node and tree_node.parent)
      # puts "checking parent: #{tree_node.parent.name.tags} where #{tree_node.parent.name.is_done?}"
       return_value = return_value || tree_node.parent.name.is_done?
     end
@@ -92,8 +92,20 @@ class Task
     @raw_task_string[/\A\t*/].size
   end
 
+
+  def get_tasks_by_context(context)
+    tasks = []
+    @tree_node.select do |node|
+
+      node.name.tags.select {|tag| tag == context}.length > 0
+    end
+    return tasks
+  end
+
   def self.parse_file(filename)
-    root_node = Tree::TreeNode.new(Task.new("ROOT:"))
+    root_task = Task.new("ROOT:")
+    root_node = Tree::TreeNode.new(root_task)
+    root_task.tree_node = root_node
     self._recurse_tree(root_node, 0, File.open(filename))
     return root_node
   end
