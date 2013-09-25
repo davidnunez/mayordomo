@@ -7,6 +7,7 @@ class Task
   attr_accessor :tags, :task_string, :raw_task_string
   attr_accessor :created_date, :start_date, :due_date
   #attr_accessor :is_project, :is_task
+  attr_accessor :tree_node
 
   def initialize(raw_task_string_data="", task_tag_array=[])
     @raw_task_string = raw_task_string_data
@@ -63,15 +64,17 @@ class Task
     @task_string.strip.empty?
   end
 
-  def done?
+  def is_done?
     return_value = false
     tags.each do |tag| 
       return_value = return_value || (tag.tag.downcase == "@done")
     end
+    if (tree_node)
+     # puts "checking parent: #{tree_node.parent.name.tags} where #{tree_node.parent.name.is_done?}"
+      return_value = return_value || tree_node.parent.name.is_done?
+    end
     return return_value
   end
-
-
 
   def is_project?
     @is_project
@@ -89,4 +92,28 @@ class Task
     @raw_task_string[/\A\t*/].size
   end
 
+  def self.parse_file(filename)
+    root_node = Tree::TreeNode.new(Task.new("ROOT:"))
+    self._recurse_tree(root_node, 0, File.open(filename))
+    return root_node
+  end
+
+
+  def self._recurse_tree(parent, depth, file)
+      last_line = file.gets
+      while last_line do
+        task =  Task.new(last_line)
+          tabs = task.indent_level
+          if tabs < depth
+              break
+          end
+          node = Tree::TreeNode.new(task)
+          task.tree_node = node
+          if tabs >= depth
+              parent << node
+              last_line = self._recurse_tree(node, task.indent_level+1, file)
+          end
+      end 
+      return last_line
+  end
 end
