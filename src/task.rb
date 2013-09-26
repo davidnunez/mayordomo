@@ -92,14 +92,10 @@ class Task
     @raw_task_string[/\A\t*/].size
   end
 
-
   def get_tasks_by_context(context)
-    tasks = []
     @tree_node.select do |node|
-
-      node.name.tags.select {|tag| tag == context}.length > 0
+      node.name.tags.select {|tag| tag.tag == context}.length > 0 
     end
-    return tasks
   end
 
   def self.parse_file(filename)
