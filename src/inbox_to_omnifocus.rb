@@ -15,7 +15,11 @@ end
 
 task = ""
 note = ""
-File.open( filename ).each do |line|
+
+text=File.open(filename).read
+text.gsub!(/\r\n?/, "\n")
+
+text.each_line do |line|
 	if line.start_with?('-')
 		if task != ""
 			add_task(task, note)
