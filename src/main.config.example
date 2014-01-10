@@ -1,3 +1,8 @@
 CALENDAR_USERNAME = 'username'
 CALENDAR_PASSWORD = 'password'
 CALENDAR_APP_NAME = 'arbitrary_app_name'
+
+CALENDAR_NAME_MAINTENANCE  = 'z qs maintenance'
+CALENDAR_NAME_CONSUMPTION  = 'z qs consumption'
+CALENDAR_NAME_MOVES_PLACES = 'z qs moves places'
+CALENDAR_NAME_MOVES_TRAVEL = 'z qs moves travel'
