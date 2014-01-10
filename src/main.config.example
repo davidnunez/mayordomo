@@ -1,0 +1,3 @@
+CALENDAR_USERNAME = 'username'
+CALENDAR_PASSWORD = 'password'
+CALENDAR_APP_NAME = 'arbitrary_app_name'
