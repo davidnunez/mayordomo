@@ -6,7 +6,7 @@ require 'parseconfig'
 module Mayordomo
 	class Calendar
 		include Singleton
-		attr_accessor :short_names
+		attr_accessor :short_names, :config
 
 		def get_calendar_by_short_name(_short_name)
 			return get_calendar(@short_names[_short_name])
@@ -29,6 +29,7 @@ module Mayordomo
 					"consumption"  => @config['CALENDAR_NAME_CONSUMPTION'],
 					"moves_places" => @config['CALENDAR_NAME_MOVES_PLACES'],
 					"moves_travel" => @config['CALENDAR_NAME_MOVES_TRAVEL'],
+					"dark"         => @config['CALENDAR_NAME_DARK'],
 				]
 			@calendars = Hash.new
 		end

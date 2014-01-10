@@ -7,24 +7,30 @@ class Task
   attr_accessor :tags, :task_string, :raw_task_string
   attr_accessor :created_date, :start_date, :due_date
   #attr_accessor :is_project, :is_task
-  attr_accessor :tree_node
+  attr_accessor :topics, :tree_node, :type, :title
+  attr_accessor :creation_date, :start_date, :end_date, :duration
 
-  def initialize(raw_task_string_data="", task_tag_array=[])
+  def initialize(raw_task_string_data="", task_tag_array=[], task_topic_array=[])
     @raw_task_string = raw_task_string_data
     @tags = task_tag_array
-
-
-
+    @topics = task_topic_array
 
     tag_strings = @raw_task_string.scan(/(?<!\w)@\w*\([^\)]*\)|(?<!\w)@\w*\b/)
-    @task_string = @raw_task_string.gsub(/(?<!\w)@\w*\([^\)]*\)|(?<!\w)@\w*\b/, "").strip
+    topic_strings = @raw_task_string.scan(/(?<!\w)#\w*\([^\)]*\)|(?<!\w)#\w*\b/)
 
-   
-    @is_task = @task_string.strip =~ /^-.*/
-    @is_project = @task_string.strip =~ /.*:$/
+    @task_string = @raw_task_string.gsub(/(?<!\w)@\w*\([^\)]*\)|(?<!\w)@\w*\b/, "").strip
+    @task_string = @raw_task_string.gsub(/(?<!\w)#\w*\([^\)]*\)|(?<!\w)#\w*\b/, "").strip
+    @is_task = (@task_string.strip =~ /^-.*/) != nil
+    @is_project = (@task_string.strip =~ /.*:$/) != nil
 
     if is_task?
       @task_string = @task_string.strip[1..@task_string.length].strip
+      splitline = @task_string.split('|')
+      @creation_date = splitline[0]
+      @type = splitline[1].strip
+      @creation_date.strip!
+      @creation_date[-5,1] = ' '
+      @title = splitline[2..splitline.length].join(' | ') 
     end
    
     if is_project? 
@@ -35,7 +41,7 @@ class Task
     # puts "Raw Task: " + @task_string
     # puts "Raw Tags: " + tag_strings.inspect 
     
-    tag_strings.each do |tag_string|
+    tag_strings.concat(topic_strings).each do |tag_string|
       tag =  tag_string[/^[^\()]*/]
       if tag_string[/\(.*\)/]
         value = tag_string.scan(/\(([^\)]+)\)/).last.first
@@ -88,6 +94,13 @@ class Task
     !empty? && !is_task? && !is_project? 
   end 
 
+  def is_done?
+    return self.includes_tag?("done")
+  end
+
+  def includes_tag?(_tag)
+    return (not @tags.select{|tag| tag.tag.downcase.include?(_tag)}.empty?)
+  end
   def indent_level
     @raw_task_string[/\A\t*/].size
   end
