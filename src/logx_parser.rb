@@ -18,6 +18,7 @@ text=File.open(filename).read
 text.gsub!(/\r\n?/, "\n")
 
 text.each_line do |line|
+	puts "processing #{line}"
 	task = Task.new(line)
 	next if task.is_done?
 	if task.includes_tag?("movie") or task.includes_tag?("tv")
