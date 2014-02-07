@@ -3,11 +3,15 @@
     <words>
       <w>activesupport</w>
       <w>argv</w>
+      <w>concat</w>
+      <w>downcase</w>
       <w>gsub</w>
       <w>imdb</w>
       <w>mayordomo</w>
       <w>parseconfig</w>
+      <w>recurse</w>
       <w>rubytree</w>
+      <w>splitline</w>
       <w>stdin</w>
     </words>
   </dictionary>

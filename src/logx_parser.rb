@@ -4,9 +4,9 @@ require 'oauth2'
 require 'chronic'
 require 'google_calendar'
 require 'active_support/time'
-require 'task'
+require_relative 'task'
 require 'imdb'
-require 'calendar'
+require_relative 'calendar'
 
 filename = ARGV[0]
 
@@ -24,7 +24,7 @@ text.each_line do |line|
 	if task.includes_tag?('movie') or task.includes_tag?('tv')
 		puts '--------------'
 		puts line
-		i = Imdb::Search.new(task.title)
+		i = Imdb::Search.new(task.task_string)
 		i.movies[0..5].each_with_index do |movie, index|
 			puts "#{index}: #{movie.title}"
 		end
@@ -49,8 +49,8 @@ text.each_line do |line|
 		  e.title = i.movies[selection].title 
 		  e.title = e.title + ' ' + season if season
 		  e.content = i.movies[selection].id
-		  e.start_time = Chronic.parse(task.creation_date)
-		  e.end_time = Chronic.parse(task.creation_date) + i.movies[selection].length.to_i * 60
+		  e.start_time = Chronic.parse(task.created_date)
+		  e.end_time = Chronic.parse(task.created_date) + i.movies[selection].length.to_i * 60
 		end
 	end
 end
