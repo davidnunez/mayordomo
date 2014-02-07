@@ -4,6 +4,7 @@ require 'oauth2'
 require 'chronic'
 require 'google_calendar'
 require 'active_support/time'
+require 'calendar'
 
 filename = ARGV[0]
 
