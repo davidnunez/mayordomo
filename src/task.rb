@@ -157,13 +157,18 @@ class Task
     root_task = Task.new('ROOT:')
     root_node = Tree::TreeNode.new(root_task)
     root_task.tree_node = root_node
-    self._recurse_tree(root_node, 0, File.open(filename))
+
+    file = File.open(filename)
+    contents = file.read
+    contents.gsub! /^$\n/, ''
+
+    self._recurse_tree(root_node, 0, contents.lines)
     return root_node
   end
 
 
   def self._recurse_tree(parent, depth, file)
-    last_line = file.gets
+    last_line = file.shift
     while last_line do
       task = Task.new(last_line)
       tabs = task.indent_level
