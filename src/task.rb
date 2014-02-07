@@ -24,13 +24,12 @@ class Task
     @is_task = @task_string.strip.start_with? '-'
 
 
-
     if is_task?
       @task_string = @task_string.strip[1..@task_string.length].strip
       splitline = @task_string.split('|')
       if splitline.length == 3
         created_date = splitline[0].strip
-        created_date[-5,1] = ' '
+        created_date[-5, 1] = ' '
 
         @tags << Tag.new('@created', created_date)
         @tags << Tag.new('@type', splitline[1].strip)
@@ -38,22 +37,21 @@ class Task
       end
 
     end
-   
-    if is_project? 
+
+    if is_project?
       self.task_string = self.task_string.strip[0..self.task_string.length-2].strip
     end
 
 
-    
     tag_strings.concat(topic_strings).each do |tag_string|
-      tag =  tag_string[/^[^\()]*/]
+      tag = tag_string[/^[^\()]*/]
       value = nil
       if tag_string[/\(.*\)/]
         value = tag_string.scan(/\(([^\)]+)\)/).last.first
       end
       # puts "\tTag: " + tag 
       # if value 
-        # puts "\t\tValue: " + value
+      # puts "\t\tValue: " + value
       # end
       @tags << Tag.new(tag, value)
 
@@ -126,14 +124,14 @@ class Task
 
   def is_comment?
     !self.empty? && !self.is_task? && !self.is_project?
-  end 
+  end
 
   def is_done?
     self.includes_tag?('done')
   end
 
   def created_date
-    created_date = @tags.select{|tag| tag.tag.downcase.include?("@created")}
+    created_date = @tags.select { |tag| tag.tag.downcase.include?("@created") }
     if created_date.first
       created_date.first.value
     else
@@ -142,15 +140,16 @@ class Task
   end
 
   def includes_tag?(_tag)
-     (not @tags.select{|tag| tag.tag.downcase.include?(_tag)}.empty?)
+    (not @tags.select { |tag| tag.tag.downcase.include?(_tag) }.empty?)
   end
+
   def indent_level
     @raw_task_string[/\A\t*/].size
   end
 
   def get_tasks_by_context(context)
     self.tree_node.select do |node|
-      node.name.tags.select {|tag| tag.tag == context}.length > 0 
+      node.name.tags.select { |tag| tag.tag == context }.length > 0
     end
   end
 
@@ -164,20 +163,20 @@ class Task
 
 
   def self._recurse_tree(parent, depth, file)
-      last_line = file.gets
-      while last_line do
-        task =  Task.new(last_line)
-          tabs = task.indent_level
-          if tabs < depth
-              break
-          end
-          node = Tree::TreeNode.new(task)
-          task.tree_node = node
-          if tabs >= depth
-              parent << node
-              last_line = self._recurse_tree(node, task.indent_level+1, file)
-          end
-      end 
-      return last_line
+    last_line = file.gets
+    while last_line do
+      task = Task.new(last_line)
+      tabs = task.indent_level
+      if tabs < depth
+        break
+      end
+      node = Tree::TreeNode.new(task)
+      task.tree_node = node
+      if tabs >= depth
+        parent << node
+        last_line = self._recurse_tree(node, task.indent_level+1, file)
+      end
+    end
+    return last_line
   end
 end
