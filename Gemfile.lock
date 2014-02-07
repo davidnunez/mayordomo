@@ -37,6 +37,7 @@ GEM
       jwt (~> 0.1.4)
       multi_json (~> 1.0)
       rack (~> 1.2)
+    parseconfig (1.0.4)
     rack (1.5.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
@@ -58,4 +59,5 @@ DEPENDENCIES
   imdb
   moves
   oauth2
+  parseconfig
   rubytree
