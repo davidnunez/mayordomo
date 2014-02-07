@@ -13,7 +13,11 @@ root_node = Task.parse_file(filename)
 #puts root_node.name.get_tasks_by_context('@process')
 
 root_node.children.each do |node|
-  puts node.name.to_tp
+  node.each do |leaf|
+    puts leaf.name.to_tp
+  end
+
+  # puts node.name.to_tp
 
 end
 
