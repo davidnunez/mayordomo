@@ -6,6 +6,7 @@
       <w>concat</w>
       <w>downcase</w>
       <w>gsub</w>
+      <w>highline</w>
       <w>imdb</w>
       <w>mayordomo</w>
       <w>parseconfig</w>
