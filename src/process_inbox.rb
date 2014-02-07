@@ -34,12 +34,12 @@ root_node.children.each do |node|
   choose do |menu|
     menu.readline = true
     menu.layout = :one_line
-    menu.choice(:trash) { puts "DELETE" }
-    menu.choice(:someday) { puts "someday" }
-    menu.choice(:reference) { puts "REFERENCE" }
+    menu.choice(:trash) { puts 'DELETE' }
+    menu.choice(:someday) { puts 'someday' }
+    menu.choice(:reference) { puts 'REFERENCE' }
     menu.choice(:quit) {exit}
   end
-  node.name.tags << Tag.new("@handled", nil)
+  node.name.tags << Tag.new('@handled', nil)
 
   # puts node.name.to_tp
 
