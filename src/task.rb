@@ -34,7 +34,7 @@ class Task
 
         @tags << Tag.new('@created', created_date)
         @tags << Tag.new('@type', splitline[1].strip)
-        @task_string = splitline[2..splitline.length].join(' | ')
+        @task_string = splitline[2..splitline.length].join(' | ').strip
       end
 
     end
@@ -90,7 +90,11 @@ class Task
       return_string = "#{return_string}:"
     end
 
-    "#{"\t"*indent_level}#{return_string} #{tags}"
+    if tags.length > 0
+      return_string = "#{return_string} #{tags}"
+    end
+    "#{"\t"*indent_level}#{return_string}"
+
   end
 
   def empty?
