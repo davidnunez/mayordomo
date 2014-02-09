@@ -8,6 +8,7 @@ require 'pathname'
 
 require 'parseconfig'
 require 'fileutils'
+require 'time'
 class String
   def to_bool
     return true if self.downcase =~ (/^(true|t|yes|y|1)$/i)
@@ -38,7 +39,7 @@ end
 
 filename = ARGV[0]
 
-file_old = FileUtils.copy(filename, "#{filename}.old")
+file_old = FileUtils.copy(filename, "#{filename}.#{DateTime.now.strftime("%Y-%m-%d-%H%M")}.bak")
 file_new = File.new("#{filename}.new", "w")
 
 root_node = Task.parse_file(filename)
@@ -47,8 +48,10 @@ root_node = Task.parse_file(filename)
 #root_node.each {|node|  puts node.name  if (node.name.is_a? Task and node.name.is_task? and !node.name.is_done?)}
 #puts root_node.name.get_tasks_by_context('@process')
 
+skipping = false
+
 root_node.children.each do |node|
-  if !node.name.is_done?
+  if !node.name.is_done? and !skipping
     puts '----------------------------------------------------------------'
     puts node.name.to_full_tp
     puts '----------------------------------------------------------------'
@@ -84,12 +87,13 @@ root_node.children.each do |node|
         node.name.tags << Tag.new('@txfr', nil)
         node.name.tags << Tag.new('@done', nil)
       end
-      menu.choice(:quit) {exit}
+      menu.choice(:quit) {skipping = true}
     end
   end
   file_new.write(node.name.to_full_tp)
 end
 
+FileUtils.move(file_new.path, filename)
 
 #text=File.open(filename).read
 #text.gsub!(/\r\n?/, "\n")
