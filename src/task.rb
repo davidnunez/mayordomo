@@ -95,6 +95,14 @@ class Task
 
   end
 
+  def to_full_tp
+    node_text = ""
+    self.tree_node.each do |leaf|
+      node_text += leaf.name.to_tp + "\n"
+    end
+    node_text
+  end
+
   def empty?
     @task_string.strip.empty?
   end
