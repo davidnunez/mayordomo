@@ -4,8 +4,10 @@ require 'tree'
 require_relative 'task'
 require_relative 'tag'
 require 'highline/import'
+require 'pathname'
 
-
+require 'parseconfig'
+require 'fileutils'
 class String
   def to_bool
     return true if self.downcase =~ (/^(true|t|yes|y|1)$/i)
@@ -16,7 +18,28 @@ class String
 end
 
 
+def prepend(filename, prepend_text)
+  original_file = filename
+  new_file = original_file + '.new'
+
+  File.open(new_file, 'w') do |fo|
+    fo.puts prepend_text
+    File.foreach(original_file) do |li|
+      fo.puts li
+    end
+  end
+
+  File.rename(original_file, original_file + '.old')
+  File.rename(new_file, original_file)
+end
+
+
+@config = ParseConfig.new('main.config')
+
 filename = ARGV[0]
+
+file_old = FileUtils.copy(filename, "#{filename}.old")
+file_new = File.new("#{filename}.new", "w")
 
 root_node = Task.parse_file(filename)
 
@@ -25,24 +48,46 @@ root_node = Task.parse_file(filename)
 #puts root_node.name.get_tasks_by_context('@process')
 
 root_node.children.each do |node|
-  puts '----------------------------------------------------------------'
-  node.name.tree_node.each do |leaf|
-    puts leaf.name.to_tp
+  if !node.name.is_done?
+    puts '----------------------------------------------------------------'
+    puts node.name.to_full_tp
+    puts '----------------------------------------------------------------'
+
+    choose do |menu|
+      menu.readline = true
+      menu.layout = :one_line
+      menu.choice(:trash) do
+        node.name.tags << Tag.new('@wontdo', nil)
+        node.name.tags << Tag.new('@done', nil)
+      end
+      menu.choice(:move) do |s|
+        # puts node.name.tags
+        topic = ask('Topic?  ')
+        files = Dir.glob("#{@config['BRAIN_DIRECTORY']}/*#{topic}*")
+
+        someday_file = choose { |file|
+          file.choice(:skip) { nil }
+          files.each { |f| file.choice(f) }
+        }
+        if someday_file
+          File.open(someday_file, 'a') { |f| f.write(node.name.to_full_tp) }
+          node.name.tags << Tag.new('@txfr', nil)
+          node.name.tags << Tag.new('@done', nil)
+        end
+
+      end
+      menu.choice(:do) do
+        node.name.tags << Tag.new('@done', nil)
+      end
+      menu.choice(:add_to_gtdx) do
+        prepend("#{@config['BRAIN_DIRECTORY']}/gtdx.txt", node.name.to_full_tp)
+        node.name.tags << Tag.new('@txfr', nil)
+        node.name.tags << Tag.new('@done', nil)
+      end
+      menu.choice(:quit) {exit}
+    end
   end
-  puts '----------------------------------------------------------------'
-
-  choose do |menu|
-    menu.readline = true
-    menu.layout = :one_line
-    menu.choice(:trash) { puts 'DELETE' }
-    menu.choice(:someday) { puts 'someday' }
-    menu.choice(:reference) { puts 'REFERENCE' }
-    menu.choice(:quit) {exit}
-  end
-  node.name.tags << Tag.new('@handled', nil)
-
-  # puts node.name.to_tp
-
+  file_new.write(node.name.to_full_tp)
 end
 
 

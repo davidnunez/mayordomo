@@ -7,6 +7,8 @@ CALENDAR_NAME_CONSUMPTION  = 'z qs consumption'
 CALENDAR_NAME_MOVES_PLACES = 'z qs moves places'
 CALENDAR_NAME_MOVES_TRAVEL = 'z qs moves travel'
 
+BRAIN_DIRECTORY = ''
+
 [MOVES]
 CLIENT_ID = client_id
 CLIENT_SECRET = client_secret
