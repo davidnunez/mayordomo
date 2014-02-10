@@ -95,9 +95,10 @@ class Task
 
   end
 
-  def to_full_tp
+  def to_full_tp(additional_indent = 0)
     node_text = ""
     self.tree_node.each do |leaf|
+      additional_indent.times {node_text += "\t"}
       node_text += leaf.name.to_tp + "\n"
     end
     node_text
@@ -174,15 +175,16 @@ class Task
     return root_node
   end
 
-
   def self._recurse_tree(parent, depth, file)
     last_line = file.shift
+    #puts "importing #{last_line}"
     while last_line do
       task = Task.new(last_line)
       tabs = task.indent_level
       if tabs < depth
         break
       end
+      #TODO: Factor tree_node creation up to initialization
       node = Tree::TreeNode.new(task)
       task.tree_node = node
       if tabs >= depth

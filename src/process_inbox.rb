@@ -50,6 +50,16 @@ root_node = Task.parse_file(filename)
 
 skipping = false
 
+num_to_process = 0
+root_node.children.each do |node|
+  if !node.name.is_done?
+    num_to_process += 1
+  end
+end
+
+puts "Processing #{num_to_process} items"
+
+
 root_node.children.each do |node|
   if !node.name.is_done? and !skipping
     puts '----------------------------------------------------------------'
@@ -65,6 +75,7 @@ root_node.children.each do |node|
       end
       menu.choice(:move) do |s|
         # puts node.name.tags
+        #TODO: downcase this search
         topic = ask('Topic?  ')
         files = Dir.glob("#{@config['BRAIN_DIRECTORY']}/*#{topic}*")
 
@@ -84,6 +95,14 @@ root_node.children.each do |node|
       end
       menu.choice(:add_to_gtdx) do
         prepend("#{@config['BRAIN_DIRECTORY']}/gtdx.txt", node.name.to_full_tp)
+        node.name.tags << Tag.new('@txfr', nil)
+        node.name.tags << Tag.new('@done', nil)
+      end
+      menu.choice(:edit_to_gtdx) do
+        prepend("#{@config['BRAIN_DIRECTORY']}/gtdx.txt", node.name.to_full_tp(1))
+        new_name = ask("edit?")
+
+        prepend("#{@config['BRAIN_DIRECTORY']}/gtdx.txt", new_name)
         node.name.tags << Tag.new('@txfr', nil)
         node.name.tags << Tag.new('@done', nil)
       end
