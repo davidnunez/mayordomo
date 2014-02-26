@@ -152,6 +152,10 @@ class Task
     (not @tags.select { |tag| tag.tag.downcase.include?(_tag) }.empty?)
   end
 
+  def get_tag(_tag)
+    @tags.select { |tag| tag.tag.downcase == _tag.downcase}.first
+  end
+  
   def indent_level
     @raw_task_string[/\A\t*/].size
   end

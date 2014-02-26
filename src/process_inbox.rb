@@ -62,6 +62,7 @@ puts "Processing #{num_to_process} items"
 
 root_node.children.each do |node|
   if !node.name.is_done? and !skipping
+    _redo = false
     puts '----------------------------------------------------------------'
     puts node.name.to_full_tp
     puts '----------------------------------------------------------------'
@@ -106,9 +107,14 @@ root_node.children.each do |node|
         node.name.tags << Tag.new('@txfr', nil)
         node.name.tags << Tag.new('@done', nil)
       end
+      menu.choice(:open) do
+        system ("open #{node.name.get_tag('@url').value}") if node.name.includes_tag?("@url")
+        _redo = true
+      end
       menu.choice(:quit) {skipping = true}
     end
   end
+  redo if _redo 
   file_new.write(node.name.to_full_tp)
 end
 
