@@ -49,23 +49,10 @@ class Task
       if tag_string[/\(.*\)/]
         value = tag_string.scan(/\(([^\)]+)\)/).last.first
       end
-      # puts "\tTag: " + tag 
-      # if value 
-      # puts "\t\tValue: " + value
-      # end
+
       @tags << Tag.new(tag, value)
 
     end
-    # puts "INDENT: " + self.indent_level.to_s
-    # puts self.inspect
-    # puts "DONE: " + self.done?.to_s
-    # puts "--------------------------------"
-
-    #if tag_strings.length > 0
-    #  puts "Raw String : " + @raw_task_string
-    #  puts "Task String: " + @task_string
-    #  puts "Raw Tags   : " + tag_strings.inspect
-    #end
 
   end
 
@@ -108,27 +95,12 @@ class Task
     @task_string.strip.empty?
   end
 
-  #def is_done?
-  #  return_value = false
-  #  return_value || self.includes_tag?('done')
-  #  #tags.each do |tag|
-  #  #  return_value = return_value || (tag.tag.downcase == '@done')
-  #  #end
-  #  if tree_node and tree_node.parent
-  #   # puts "checking parent: #{tree_node.parent.name.tags} where #{tree_node.parent.name.is_done?}"
-  #    return_value = return_value || tree_node.parent.name.is_done?
-  #  end
-  #  return_value
-  #end
-
   def is_project?
     @is_project
-#    @task_string.strip.end_with? ':'
   end
 
   def is_task?
     @is_task
-#    @task_string.strip.start_with? '-'
   end
 
   def is_comment?
@@ -136,6 +108,7 @@ class Task
   end
 
   def is_done?
+    # TODO: check if ancestors are done
     self.includes_tag?('done')
   end
 
