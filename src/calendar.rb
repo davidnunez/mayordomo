@@ -14,8 +14,6 @@ module Mayordomo
 
 		def get_calendar(_calendar)
 			return @calendars[_calendar] if @calendars.has_key?(_calendar)
-#			@config = ParseConfig.new('main.config')
-
 			@calendars[_calendar] = Google::Calendar.new(:username => @config['CALENDAR_USERNAME'],
 				:password => @config['CALENDAR_PASSWORD'],
 				:app_name => @config['CALENDAR_APP_NAME'],
