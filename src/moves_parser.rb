@@ -6,8 +6,9 @@ require 'chronic'
 require 'google_calendar'
 require 'active_support/time'
 require './calendar.rb'
+require './event.rb'
 require 'parseconfig'
-
+require 'mongoid'
 def moves_time(_time)
 	_time.gsub!(/[TZ]/, '')    
 
@@ -23,6 +24,7 @@ end
 
 @config = ParseConfig.new('main.config')
 auth_client = OAuth2::Client.new(@config['MOVES']['CLIENT_ID'], @config['MOVES']['CLIENT_SECRET'], :site => 'https://api.moves-app.com/',  :token_url => 'https://api.moves-app.com/oauth/v1/access_token', :authorize_url => 'https://api.moves-app.com/oauth/v1/authorize')
+Mongoid.load!("./mongoid.yml", :development)
 
 
 # puts
@@ -54,8 +56,9 @@ segments.each do |segment|
 		event = cal_places.create_event do |e|
 		  e.title = segment["place"]["name"]
 		  e.content = segment.to_s
-		  e.start_time = moves_time(segment["startTime"])
-		  e.end_time = moves_time(segment["endTime"])
+		  e.start_time = (Time.parse(segment["startTime"]))
+		  e.end_time = (Time.parse(segment["endTime"]))
+		  Mayordomo::Event.create(title: e.title, content: e.content, start_time: e.start_time, end_time: e.end_time)
 		end
 	end
 	if segment["type"] == "move" 
@@ -63,12 +66,13 @@ segments.each do |segment|
 		event = cal_travel.create_event do |e|
 		  e.title = "travel"
 		  e.content = segment.to_s
-		  e.start_time = moves_time(segment["startTime"])
-		  e.end_time = moves_time(segment["endTime"])
+		  e.start_time = (Time.parse(segment["startTime"]))
+		  e.end_time = (Time.parse(segment["endTime"]))
+		  Mayordomo::Event.create(title: e.title, content: e.content, start_time: e.start_time, end_time: e.end_time)
+		  
 		end
+
 	end
-
-
 end
 
 

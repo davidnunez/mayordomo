@@ -2,3 +2,5 @@
 main.config
 /.idea/workspace.xml
 /.idea/tasks.xml
+
+/src/mongoid.yml
