@@ -2,7 +2,7 @@ require 'chronic'
 require 'google_calendar'
 require 'active_support/time'
 require 'parseconfig'
-
+require 'singleton'
 module Mayordomo
 	class Calendar
 		include Singleton
