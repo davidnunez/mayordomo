@@ -12,7 +12,7 @@ filename = ARGV[0]
 
 
 cal_consumption = Mayordomo::Calendar.instance.get_calendar_by_short_name('consumption')
-
+cal_maintainance = Mayordomo::Calendar.instance.get_calendar_by_short_name('maintainance')
 
 text=File.open(filename).read
 text.gsub!(/\r\n?/, "\n")
@@ -21,6 +21,18 @@ text.each_line do |line|
 	puts "processing #{line}"
 	task = Task.new(line)
 	next if task.is_done?
+	if task.includes_tag?('eca')
+		cal_maintainance.create_event do |e|
+		  e.title = "ECA"
+		  begin
+			  e.content = task.get_tag('eca').value
+		  rescue
+		  end
+		  puts "ECA: #{task.created_date}"
+		  e.start_time = Chronic.parse(task.created_date)
+		  e.end_time = Chronic.parse(task.created_date)
+		end		
+	end
 	if task.includes_tag?('movie') or task.includes_tag?('tv')
 		puts '--------------'
 		puts line
