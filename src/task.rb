@@ -27,7 +27,7 @@ class Task
     if is_task?
       @task_string = @task_string.strip[1..@task_string.length].strip
       splitline = @task_string.split('|')
-      if splitline.length == 3
+      if splitline.length >= 2
         created_date = splitline[0].strip
         created_date[-5, 1] = ' '
 
