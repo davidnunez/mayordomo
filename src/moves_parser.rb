@@ -31,7 +31,7 @@ Mongoid.load!("./mongoid.yml", :development)
 # puts "We will now open an authorization page in your default web browser. Copy the code you receive and return here."
 # print "Press Enter to continue..."
 # gets
-# puts auth_client.auth_code.authorize_url(:scope => 'activity')
+# puts auth_client.auth_code.authorize_url(:scope => 'activity+location')
 # %x{open "#{auth_client.auth_code.authorize_url(:scope => 'activity+location')}"}
 # print "Paste the code you received here: "
 # code = gets.strip
